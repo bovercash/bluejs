@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+		<title>Blue Logging Example</title>
+		<style>
+			.section {
+				margin-top: 10px;
+				margin-bottom: 10px;
+			}
+			.iblock {
+			    display: inline-block;
+			    margin: 0 10px 0 0;
+			    vertical-align: top;
+			}
+			.iblock .iblock {
+			    margin-bottom: 0;
+			}
+			.nowrap {
+			    white-space: nowrap;
+			}
+			.logBox {
+				font-size: 14px;
+				color: #CCC;
+				border:1px solid #333;
+				overflow: auto;
+				min-width:400px;
+				height: 150px;
+			}
+		</style>
+		<script src="../javascript/logger.blue.js" type="text/javascript"></script>
+	</head>
+	<body>
+		<div class="section">
+			<div class="iblock">
+				<span>DEBUG</span>
+				<div id="jsDebugPanel" class="logBox nowrap">
+				</div>
+			</div>
+			<div class="iblock">
+				<span>INFO</span>
+				<div id="jsInfoPanel" class="logBox nowrap">
+				</div>
+			</div>
+		</div>
+		<div class="section">
+			<div class="iblock">
+				<span>WARN</span>
+				<div id="jsWarnPanel" class="logBox nowrap">
+				</div>
+			</div>
+			<div class="iblock">
+				<span>ERROR</span>
+				<div id="jsErrorPanel" class="logBox nowrap">
+				</div>
+			</div>
+		</div>
+		<hr/>
+		<div>
+			<label>Log Msg:</label><input type="text" id="jsLogInput" name="logInput" />
+			<select id="jsLogLevel" name="logLevel">
+				<option value="DEBUG">DEBUG</option>
+				<option value="INFO">INFO</option>
+				<option value="WARN">WARN</option>
+				<option value="ERROR">ERROR</option>
+			</select>
+			<button id="jsLogBtn" name="logBtn" type="button">LOG</button>
+		</div>
+	
+		<script type="text/javascript">
+			//create my loggers
+			Logger.subscribe('DEBUG',Logger.defaultAppenders.consoleAppender());			
+			Logger.subscribe('DEBUG',Logger.defaultAppenders.divAppender('jsDebugPanel'));
+			Logger.subscribe('INFO',Logger.defaultAppenders.divAppender('jsInfoPanel'));
+			Logger.subscribe('WARN',Logger.defaultAppenders.divAppender('jsWarnPanel'));
+			Logger.subscribe('ERROR',Logger.defaultAppenders.divAppender('jsErrorPanel'));
+			
+			var log = Logger.newLogger('foo');
+			
+			//define my logging mechanism
+			var logBtnClick = function(){
+				var selectElement = document.getElementById('jsLogLevel');
+				var selectedLevel = selectElement.options[selectElement.selectedIndex].value;
+				var logMsg = document.getElementById('jsLogInput').value;
+				if(selectedLevel == 'DEBUG'){
+					log.debug(logMsg);
+				}else if(selectedLevel == 'INFO'){
+					log.info(logMsg);
+				}else if(selectedLevel == 'WARN'){
+					log.warn(logMsg);
+				}else if(selectedLevel == 'ERROR'){
+					log.error(logMsg);
+				}				
+			};
+		
+			//bind click event
+			var logBtn = document.getElementById('jsLogBtn');
+			if(logBtn.addEventListener){//doesn't work for ie < 9
+				logBtn.addEventListener("click", logBtnClick, false);
+			}else{
+				if(logBtn.attachEvent){
+					logBtn.attachEvent('onclick',logBtnClick);
+				}
+			}
+		
+		</script>
+	</body>
+</html>
